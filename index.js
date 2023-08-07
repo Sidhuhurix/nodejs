@@ -1,26 +1,31 @@
-const express = require("express");
-import express from "express"
+import express from "express";
+import { MongoClient } from "mongodb";
 import cors from "cors";
+const app = express(); //calling express
 
+app.use(cors());
 
-const app = express();
-var cors = require('cors')
+// const MONGO_URL = "mongodb://localhost";
+const MONGO_URL = "mongodb://127.0.0.1"; //  nodejs - 16+
 
-app.use(cors())
-
-const PORT = 5000;
+// Node - MongoDB
+async function createConnection() {
+const client = new MongoClient(MONGO_URL);
+ await client.connect();
+ console.log("Mongo is connected ✌😊");
+ return client;
+}
+const client = await createConnection();
+const PORT = 4000; //
+app.get("/", function (request, response) {
+ //homepage / //req==>  res=>sending emojies
+ response.send("🙋‍♂️, 🌏 🎊✨🤩");
+});
 app.get("/movies", function (request, response) {
-  response.send(movies);
+ response.send(movies);
 });
 
-
-app.get("/movies/:id", function (request, response) {
-
-    console.log(request.params);
-  response.send(movies);
-});
-
-const movies = [
+const movie = [
   {
     "id": "99",
     "name": "Vikram",
@@ -109,8 +114,14 @@ const movies = [
     "trailer": "https://youtu.be/NgsQ8mVkN8w",
     "id": "109"
   }
-
 ]
 
-const movieid = movies.find()
-app.listen(PORT, () => console.log(`The server started in: ${PORT} ✨✨`));
+app.get("/movies/:id", function (request, response) {
+ const { id } = request.params;
+const movie = movies.find((mv) => mv.id === id);
+ response.send(movie);
+});
+
+app.listen(PORT, () => console.log(`The server started in: ${PORT} ✨✨`)); //starting line one port one application
+
+
